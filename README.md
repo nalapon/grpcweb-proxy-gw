@@ -1,4 +1,4 @@
-#GRPC-WEB-PROXY-G
+# GRPC-WEB-PROXY-GW
 
 A proxy for the Hyperledger Fabric gateway service. So, what's this for? Well, for connecting a web client to Fabric, for example.
 
