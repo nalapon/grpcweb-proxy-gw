@@ -65,22 +65,22 @@ func main() {
 	// 3. Load TLS credentials from config
 	var clientCert tls.Certificate
 	var caCertPool *x509.CertPool
-	if cfg.Fabric.Tls.Enabled {
+	if cfg.Fabric.TLS.Enabled {
 		logger.Info("loading TLS credentials",
-			"clientCert", cfg.Fabric.Tls.ClientCertPath,
-			"clientKey", cfg.Fabric.Tls.ClientKeyPath)
+			"clientCert", cfg.Fabric.TLS.ClientCertPath,
+			"clientKey", cfg.Fabric.TLS.ClientKeyPath)
 
 		clientCert, err = tls.LoadX509KeyPair(
-			cfg.Fabric.Tls.ClientCertPath,
-			cfg.Fabric.Tls.ClientKeyPath,
+			cfg.Fabric.TLS.ClientCertPath,
+			cfg.Fabric.TLS.ClientKeyPath,
 		)
 		if err != nil {
 			logger.Error("failed to load client key pair", "error", err)
 			os.Exit(1)
 		}
 
-		logger.Info("loading CA certificate", "caCert", cfg.Fabric.Tls.CaCertPath)
-		caCert, err := os.ReadFile(cfg.Fabric.Tls.CaCertPath)
+		logger.Info("loading CA certificate", "caCert", cfg.Fabric.TLS.CaCertPath)
+		caCert, err := os.ReadFile(cfg.Fabric.TLS.CaCertPath)
 		if err != nil {
 			logger.Error("failed to read peer TLS CA certificate", "error", err)
 			os.Exit(1)
@@ -99,13 +99,13 @@ func main() {
 	connManager := fabric.NewConnectionManager(
 		clientCert,
 		caCertPool,
-		cfg.Fabric.Tls.Enabled,
+		cfg.Fabric.TLS.Enabled,
 		connManagerLogger,
 	)
 	defer connManager.CloseConnection()
 
 	serverLogger := logger.With(slog.String("component", "server"))
-	proxyServer := server.New(cfg, connManager, serverLogger)
+	proxyServer := server.New(*cfg, connManager, serverLogger)
 
 	// 5. Start server and handle graceful shutdown
 	go func() {
